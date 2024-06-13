@@ -15,4 +15,5 @@ snarkjs groth16 setup ./build/vote.r1cs ./ptau/pot12_final.ptau ./build/vote_000
 snarkjs groth16 prove ./build/vote_0000.zkey ./build/witness.wtns ./build/proof.json ./build/public.json
 
 # Verify the proof
+snarkjs zkey export verificationkey ./build/vote_0000.zkey ./build/vote_verification_key.json
 snarkjs groth16 verify ./build/vote_verification_key.json ./build/public.json ./build/proof.json
