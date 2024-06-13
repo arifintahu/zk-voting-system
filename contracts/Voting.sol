@@ -1,35 +1,50 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract Voting is Ownable {
-    mapping(address => bool) public hasVoted;
-    mapping(uint256 => uint256) public votes;
-    uint256 public totalVotes;
-
-    event VoteCast(address indexed voter, uint256 option);
-
-    function castVote(uint256 _option, uint256[2] memory a, uint256[2][2] memory b, uint256[2] memory c, uint256[1] memory input) public {
-        require(!hasVoted[msg.sender], "Already voted");
-        // Call the zk-SNARK verifier
-        require(verifyProof(a, b, c, input), "Invalid proof");
-
-        hasVoted[msg.sender] = true;
-        votes[_option]++;
-        totalVotes++;
-
-        emit VoteCast(msg.sender, _option);
+contract Voting {
+    struct Voter {
+        bool registered;
+        bool voted;
+        uint8 vote; // Candidate ID
     }
 
-    function verifyProof(
-        uint256[2] memory a,
-        uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[1] memory input
-    ) public view returns (bool) {
-        // Implement the verifier logic or call the zk-SNARK verifier contract
-        // This is a placeholder for the actual zk-SNARK verification
+    address public admin;
+    mapping(address => Voter) public voters;
+    uint8[2] public votes; // Vote count for each candidate
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Only admin can perform this action");
+        _;
+    }
+
+    function registerVoter(address _voter) public onlyAdmin {
+        require(!voters[_voter].registered, "Voter is already registered");
+        voters[_voter] = Voter({registered: true, voted: false, vote: 0});
+    }
+
+    function vote(uint8 _vote, bytes memory _proof) public {
+        require(voters[msg.sender].registered, "Voter is not registered");
+        require(!voters[msg.sender].voted, "Voter has already voted");
+        require(_vote < 2, "Invalid candidate");
+
+        // Verify zk-SNARK proof (simplified, replace with actual verification logic)
+        require(verifyProof(_proof, _vote), "Invalid zk-SNARK proof");
+
+        voters[msg.sender].voted = true;
+        voters[msg.sender].vote = _vote;
+        votes[_vote]++;
+    }
+
+    function verifyProof(bytes memory _proof, uint8 _vote) internal pure returns (bool) {
+        // Dummy zk-SNARK proof verification
         return true;
+    }
+
+    function getVotes() public view returns (uint8[2] memory) {
+        return votes;
     }
 }
