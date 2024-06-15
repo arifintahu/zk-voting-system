@@ -10,17 +10,6 @@ template IsEqual() {
     out <== 1 - intermediate * intermediate; // out will be 1 if in[0] == in[1], otherwise 0
 }
 
-template IsNotEqual() {
-    signal input in[2];
-    signal output out;
-
-    component isEqual = IsEqual();
-    isEqual.in[0] <== in[0];
-    isEqual.in[1] <== in[1];
-
-    out <== 1 - isEqual.out; // out will be 1 if in[0] != in[1], otherwise 0
-}
-
 template VoteCircuit() {
     signal input vote;
     signal input voterId;
