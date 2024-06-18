@@ -17,3 +17,6 @@ snarkjs groth16 prove ./build/vote_0000.zkey ./build/witness.wtns ./build/proof.
 # Verify the proof
 snarkjs zkey export verificationkey ./build/vote_0000.zkey ./build/vote_verification_key.json
 snarkjs groth16 verify ./build/vote_verification_key.json ./build/public.json ./build/proof.json
+
+# Generate verifier contract
+snarkjs zkey export solidityverifier ./build/vote_0000.zkey ./contracts/verifier.sol

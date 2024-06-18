@@ -1,16 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-contract Voting {
+import "./verifier.sol";
+
+contract VotingVerifier is Groth16Verifier {
     struct Voter {
         bool registered;
         bool voted;
-        uint8 vote; // Candidate ID
+        uint256 vote; // Candidate ID
     }
 
     address public admin;
     mapping(address => Voter) public voters;
     uint8[2] public votes; // Vote count for each candidate
+
+    event VoteVerified(address indexed voter, uint256 vote);
+    event Debug(string message, bool value);
 
     constructor() {
         admin = msg.sender;
@@ -26,21 +31,33 @@ contract Voting {
         voters[_voter] = Voter({registered: true, voted: false, vote: 0});
     }
 
-    function vote(uint8 _vote, bytes memory _proof) public {
+    function verifyVote(
+        uint[2] calldata a,
+        uint[2][2] calldata b,
+        uint[2] calldata c,
+        uint[1] calldata _input
+    ) public returns (bool) {
         require(voters[msg.sender].registered, "Voter is not registered");
         require(!voters[msg.sender].voted, "Voter has already voted");
-        require(_vote < 2, "Invalid candidate");
+        require(_input[0] < 2, "Invalid candidate");
 
         // Verify zk-SNARK proof (simplified, replace with actual verification logic)
-        require(verifyProof(_proof, _vote), "Invalid zk-SNARK proof");
+        bool verified = verifyProof(a, b, c, _input);
+        emit Debug("Verification result", verified);
+        require(verified, "Invalid proof");
+
+        // Extract the vote value from the public signals
+        uint256 vote = _input[0];
+        
+        // Ensure the vote is either 0 or 1
+        require(vote == 0 || vote == 1, "Invalid vote value");
 
         voters[msg.sender].voted = true;
-        voters[msg.sender].vote = _vote;
-        votes[_vote]++;
-    }
+        voters[msg.sender].vote = vote;
+        votes[vote]++;
 
-    function verifyProof(bytes memory _proof, uint8 _vote) internal pure returns (bool) {
-        // Dummy zk-SNARK proof verification
+        emit VoteVerified(msg.sender, vote);
+
         return true;
     }
 
