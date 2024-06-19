@@ -42,7 +42,7 @@ contract VotingVerifier is Groth16Verifier {
         require(_input[0] < 2, "Invalid candidate");
 
         // Verify zk-SNARK proof (simplified, replace with actual verification logic)
-        bool verified = verifyProof(a, b, c, _input);
+        bool verified = this.verifyProof(a, b, c, _input);
         emit Debug("Verification result", verified);
         require(verified, "Invalid proof");
 
