@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "contract:compile": "npx hardhat compile",
+    "contract:test": "npx hardhat test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
-    "chai": "^5.1.1",
+    "@types/sinon-chai": "^3.2.3",
+    "chai": "4.4.1",
     "circom": "^0.5.46",
     "ethereum-waffle": "^4.0.10",
     "ethers": "^5.7.2",
