@@ -2,6 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const snarkjs = require("snarkjs");
 const path = require("path");
+const utils = require('../utils')
 
 describe("VotingVerifier", function () {
   let VotingVerifier, votingVerifier, owner, addr1, addr2;
@@ -62,19 +63,9 @@ describe("VotingVerifier", function () {
       path.resolve('./build/vote_0000.zkey')
     );
 
-    console.log(JSON.stringify(proof, null, 1))
-    console.log(JSON.stringify(publicSignals, null, 1))
-
-    const a = [proof.pi_a[0], proof.pi_a[1]];
-    const b = [
-      [proof.pi_b[0][0], proof.pi_b[0][1]],
-      [proof.pi_b[1][0], proof.pi_b[1][1]]
-    ];
-    const c = [proof.pi_c[0], proof.pi_c[1]];
-    const inputs = publicSignals.map(x => x.toString());
-
-    const tx = await votingVerifier.connect(addr1).verifyVote(a, b, c, inputs);
-    await tx.wait();
+    const calldata = utils.groth16ExportSolidityCallData(proof, publicSignals);
+    
+    await votingVerifier.connect(addr1).verifyVote(calldata[0], calldata[1], calldata[2], calldata[3]);
 
     const voter = await votingVerifier.voters(addr1.address);
     expect(voter.voted).to.be.true;
