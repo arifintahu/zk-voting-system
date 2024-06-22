@@ -6,7 +6,8 @@
   "scripts": {
     "contract:compile": "npx hardhat compile",
     "contract:test": "npx hardhat test",
-    "contract:deploy-localhost": "npx hardhat ignition deploy ./ignition/modules/VotingVerifier.js --network localhost"
+    "contract:deploy-localhost": "npx hardhat ignition deploy ./ignition/modules/VotingVerifier.js --network localhost",
+    "contract:deploy-sepolia": "npx hardhat ignition deploy ./ignition/modules/VotingVerifier.js --network sepolia --deployment-id sepolia-deployment"
   },
   "keywords": [],
   "author": "",

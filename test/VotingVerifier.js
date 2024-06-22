@@ -5,11 +5,11 @@ const path = require("path");
 const utils = require('../utils')
 
 describe("VotingVerifier", function () {
-  let VotingVerifier, votingVerifier, owner, addr1, addr2;
+  let VotingVerifier, votingVerifier, owner, addr1;
 
   beforeEach(async function () {
     VotingVerifier = await ethers.getContractFactory("VotingVerifier");
-    [owner, addr1, addr2, _] = await ethers.getSigners();
+    [owner, addr1, _, _] = await ethers.getSigners();
     votingVerifier = await VotingVerifier.deploy();
     await votingVerifier.deployed();
   });
