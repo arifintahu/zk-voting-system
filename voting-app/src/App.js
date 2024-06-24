@@ -32,30 +32,32 @@ async function switchToSepolia() {
 function App() {
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
+  const [contractQuery, setContractQuery] = useState(null);
   const [account, setAccount] = useState(null);
   const [votes, setVotes] = useState([0, 0]);
   const [voterId, setVoterId] = useState('');
 
+  const CONTRACT_ADDRESS = '0x979B55616d77a4a7604882Fff49157b2CBe96148'
+
   useEffect(() => {
     const init = async () => {
-      await switchToSepolia()
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract('0x979B55616d77a4a7604882Fff49157b2CBe96148', VotingVerifier.abi, provider.getSigner());
-      setProvider(provider);
-      setContract(contract);
+      try {
+        await switchToSepolia()
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, VotingVerifier.abi, provider.getSigner());
+        const contractQuery = new ethers.Contract(CONTRACT_ADDRESS, VotingVerifier.abi, provider);
+        setProvider(provider);
+        setContract(contract);
+        setContractQuery(contractQuery);
 
-      const accounts = await provider.send('eth_requestAccounts', []);
-      console.log(accounts)
-      setAccount(accounts[0]);
+        const accounts = await provider.send('eth_requestAccounts', []);
+        setAccount(accounts[0]);
+      } catch (error) {
+        console.error(error)
+      }
     };
     init();
   }, []);
-
-  const registerVoter = async () => {
-    if (contract) {
-      await contract.registerVoter(account);
-    }
-  };
 
   const castVote = async (vote) => {
     if (contract) {
@@ -66,15 +68,17 @@ function App() {
 
   const fetchVotes = async () => {
     if (contract) {
-      const votes = await contract.getVotes();
-      setVotes(votes);
+      const votes = await contractQuery.getVotes();
+      setVotes([Number(votes['0']), Number(votes['1'])]);
     }
   };
 
   return (
     <div>
       <h1>zk-SNARK Voting System</h1>
-      <button onClick={registerVoter}>Register Voter</button>
+      <div>
+        <div>Wallet connected: {account}</div>
+      </div>
       <div>
         <button onClick={() => castVote(0)}>Vote for Candidate 0</button>
         <button onClick={() => castVote(1)}>Vote for Candidate 1</button>
