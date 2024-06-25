@@ -1,0 +1,1 @@
+export { generateProof } from './proof'

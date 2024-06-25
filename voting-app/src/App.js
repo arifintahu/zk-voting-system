@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VotingVerifier from './contracts/VotingVerifier.sol/VotingVerifier.json';
+import { generateProof } from './utils'
 
 async function switchToSepolia() {
   if (typeof window.ethereum !== 'undefined') {
@@ -61,8 +62,13 @@ function App() {
 
   const castVote = async (vote) => {
     if (contract) {
-      // const proof = await generateProof(vote, voterId); // Replace with actual proof generation logic
-      // await contract.vote(vote, proof);
+      try {
+        const { proof, publicSignals } = await generateProof(vote, account);
+        console.log(proof, publicSignals)
+        // await contract.vote(vote, proof);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
