@@ -12,7 +12,10 @@ async function generateProof() {
   console.log("Public Signals: ", publicSignals);
 
   fs.writeFileSync("./build/proof.json", JSON.stringify(proof, null, 1));
-  fs.writeFileSync("./build/public.json", JSON.stringify(publicSignals, null, 1));
+  fs.writeFileSync(
+    "./build/public.json",
+    JSON.stringify(publicSignals, null, 1)
+  );
 }
 
 generateProof().then(() => {

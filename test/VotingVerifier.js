@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const snarkjs = require("snarkjs");
 const path = require("path");
-const utils = require('../utils')
+const utils = require("../utils");
 
 describe("VotingVerifier", function () {
   let VotingVerifier, votingVerifier, owner, addr1;
@@ -31,7 +31,10 @@ describe("VotingVerifier", function () {
 
     // Mock invalid zk-SNARK proof and public signals
     const a = [0, 0];
-    const b = [[0, 0], [0, 0]];
+    const b = [
+      [0, 0],
+      [0, 0],
+    ];
     const c = [0, 0];
     const input = [2]; // Invalid candidate
 
@@ -45,7 +48,10 @@ describe("VotingVerifier", function () {
 
     // Mock invalid zk-SNARK proof and public signals
     const a = [0, 0];
-    const b = [[0, 0], [0, 0]];
+    const b = [
+      [0, 0],
+      [0, 0],
+    ];
     const c = [0, 0];
     const input = [1];
 
@@ -59,13 +65,15 @@ describe("VotingVerifier", function () {
 
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       { vote: 1, voterId: addr1.address },
-      path.resolve('./build/vote_js/vote.wasm'),
-      path.resolve('./build/vote_0000.zkey')
+      path.resolve("./build/vote_js/vote.wasm"),
+      path.resolve("./build/vote_0000.zkey")
     );
 
     const calldata = utils.groth16ExportSolidityCallData(proof, publicSignals);
-    
-    await votingVerifier.connect(addr1).verifyVote(calldata[0], calldata[1], calldata[2], calldata[3]);
+
+    await votingVerifier
+      .connect(addr1)
+      .verifyVote(calldata[0], calldata[1], calldata[2], calldata[3]);
 
     const voter = await votingVerifier.voters(addr1.address);
     expect(voter.voted).to.be.true;
