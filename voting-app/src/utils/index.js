@@ -1,1 +1,1 @@
-export { generateProof } from './proof'
+export { generateProof, groth16ExportSolidityCallData } from './proof'
