@@ -11,7 +11,7 @@ describe("VotingVerifier", function () {
     VotingVerifier = await ethers.getContractFactory("VotingVerifier");
     [owner, addr1, _, _] = await ethers.getSigners();
     votingVerifier = await VotingVerifier.deploy();
-    await votingVerifier.deployed();
+    await votingVerifier.waitForDeployment();
   });
 
   it("Should set the right admin", async function () {
@@ -23,7 +23,7 @@ describe("VotingVerifier", function () {
     const voter = await votingVerifier.voters(addr1.address);
     expect(voter.registered).to.be.true;
     expect(voter.voted).to.be.false;
-    expect(voter.vote).to.equal(0);
+    expect(voter.vote).to.equal(0n);
   });
 
   it("Should fail to vote if input is invalid", async function () {

@@ -1,5 +1,5 @@
-require("@nomiclabs/hardhat-waffle");
 require("@nomicfoundation/hardhat-ignition-ethers");
+require("@nomicfoundation/hardhat-chai-matchers");
 
 // Go to https://alchemy.com, sign up, create a new App in
 // its dashboard, and store it as the "ALCHEMY_API_KEY"

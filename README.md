@@ -8,61 +8,61 @@ Follow these steps to set up the project locally:
 
 1. **Clone the Repository:**
 
-    ```bash
-    git clone https://github.com/arifintahu/zk-voting-system.git
-    cd zk-voting-system
-    ```
+   ```bash
+   git clone https://github.com/arifintahu/zk-voting-system.git
+   cd zk-voting-system
+   ```
 
 2. **Install Dependencies:**
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   yarn install
+   ```
 
 3. **Compile Smart Contracts:**
 
-    ```bash
-    npm run contract:compile
-    ```
+   ```bash
+   npm run contract:compile
+   ```
 
 4. **Run Smart Contract Tests:**
 
-    ```bash
-    npm run contract:test
-    ```
+   ```bash
+   npm run contract:test
+   ```
 
 5. **Deploy Contracts to Sepolia:**
 
-    Before deploying, ensure you configure your variables based on `hardhat.config.js`.
+   Before deploying, ensure you configure your variables based on `hardhat.config.js`.
 
-    ```bash
-    npx hardhat vars set ALCHEMY_API_KEY
-    npx hardhat vars set SEPOLIA_PRIVATE_KEY
-    npx hardhat vars set ETHERSCAN_API_KEY
+   ```bash
+   npx hardhat vars set ALCHEMY_API_KEY
+   npx hardhat vars set SEPOLIA_PRIVATE_KEY
+   npx hardhat vars set ETHERSCAN_API_KEY
 
-    npm run contract:deploy-sepolia
-    ```
+   npm run contract:deploy-sepolia
+   ```
 
 6. **Install Voting App Dependencies:**
 
-    ```bash
-    cd voting-app
-    npm install
-    ```
+   ```bash
+   cd voting-app
+   npm install
+   ```
 
 7. **Run Voting App:**
 
-    Ensure you update the network settings and contract address as per the deployed contract.
+   Ensure you update the network settings and contract address as per the deployed contract.
 
-    ```bash
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
 
 8. **Cast a Vote:**
 
-    - Choose the candidate or option you wish to vote for.
-    - Confirm the transaction in MetaMask.
-    - Your vote will be securely recorded on the blockchain using Zero-Knowledge Proofs.
+   - Choose the candidate or option you wish to vote for.
+   - Confirm the transaction in MetaMask.
+   - Your vote will be securely recorded on the blockchain using Zero-Knowledge Proofs.
 
 ## Result
 
