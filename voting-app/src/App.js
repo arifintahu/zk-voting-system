@@ -10,13 +10,13 @@ async function switchToSepolia() {
               method: 'wallet_addEthereumChain',
               params: [{
                   chainId: '0xaa36a7', // Sepolia chain ID in hex
-                  chainName: 'Sepolia Test Network',
+                  chainName: 'Sepolia test network',
                   nativeCurrency: {
                       name: 'SepoliaETH',
-                      symbol: 'ETH', // Symbol for SepoliaETH
+                      symbol: 'SepoliaETH', // Symbol for SepoliaETH
                       decimals: 18
                   },
-                  rpcUrls: ['https://rpc.sepolia.org'], // RPC URL for Sepolia
+                  rpcUrls: ['https://sepolia.infura.io/v3/'], // RPC URL for Sepolia
                   blockExplorerUrls: ['https://sepolia.etherscan.io'] // Block explorer URL for Sepolia
               }]
           });
@@ -31,12 +31,10 @@ async function switchToSepolia() {
 
 
 function App() {
-  const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractQuery, setContractQuery] = useState(null);
   const [account, setAccount] = useState(null);
   const [votes, setVotes] = useState([0, 0]);
-  const [voterId, setVoterId] = useState('');
 
   const CONTRACT_ADDRESS = '0x979B55616d77a4a7604882Fff49157b2CBe96148'
 
@@ -45,9 +43,9 @@ function App() {
       try {
         await switchToSepolia()
         const provider = new ethers.BrowserProvider(window.ethereum);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, VotingVerifier.abi, provider.getSigner());
+        const signer = await provider.getSigner()
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, VotingVerifier.abi, signer);
         const contractQuery = new ethers.Contract(CONTRACT_ADDRESS, VotingVerifier.abi, provider);
-        setProvider(provider);
         setContract(contract);
         setContractQuery(contractQuery);
 
@@ -63,13 +61,15 @@ function App() {
   const castVote = async (vote) => {
     if (contract && account) {
       try {
-        const { proof, publicSignals } = await generateProof(vote, account);
+        const { proof, publicSignals } = await generateProof(account, vote);
         const calldata = groth16ExportSolidityCallData(proof, publicSignals)
         console.log(calldata)
 
-        // await contract.vote(vote, proof);
+        const result = await contract.verifyVote(calldata.a, calldata.b, calldata.c, calldata.i);
+        alert("Transaction Hash : " + result.hash)
       } catch (error) {
         console.error(error);
+        alert(error.message);
       }
     } else {
       alert('Wallet is not connected')
